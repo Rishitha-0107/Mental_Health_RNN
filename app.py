@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import joblib
 import string
 import nltk
+import gdown
+import os
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -18,7 +20,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # =========================================
-# DOWNLOAD NLTK
+# DOWNLOAD NLTK RESOURCES
 # =========================================
 
 nltk.download('punkt')
@@ -26,11 +28,39 @@ nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 # =========================================
+# PAGE CONFIGURATION
+# =========================================
+
+st.set_page_config(
+    page_title="Mental Health Monitoring",
+    page_icon="🧠",
+    layout="wide"
+)
+
+# =========================================
+# DOWNLOAD MODEL FROM GOOGLE DRIVE
+# =========================================
+
+model_url = "https://drive.google.com/uc?id=11SduMJijJMfGF1hXxNaDojuymxgzd5Fe"
+
+model_path = "mental_health_rnn_model.h5"
+
+if not os.path.exists(model_path):
+
+    with st.spinner("Downloading AI model... Please wait"):
+
+        gdown.download(
+            model_url,
+            model_path,
+            quiet=False
+        )
+
+# =========================================
 # LOAD SAVED FILES
 # =========================================
 
 model = load_model(
-    "mental_health_rnn_model.h5"
+    model_path
 )
 
 tokenizer = joblib.load(
@@ -51,16 +81,6 @@ max_length = joblib.load(
 
 stop_words = set(
     stopwords.words('english')
-)
-
-# =========================================
-# PAGE CONFIG
-# =========================================
-
-st.set_page_config(
-    page_title="Mental Health Monitoring",
-    page_icon="🧠",
-    layout="wide"
 )
 
 # =========================================
@@ -130,7 +150,7 @@ def preprocess_text(text):
     # Join cleaned words
     text = " ".join(filtered_words)
 
-    # Convert to sequence
+    # Convert text into sequence
     sequence = tokenizer.texts_to_sequences(
         [text]
     )
@@ -176,7 +196,7 @@ analyze = st.button(
 )
 
 # =========================================
-# PREDICTION
+# PREDICTION SECTION
 # =========================================
 
 if analyze:
@@ -189,12 +209,12 @@ if analyze:
 
     else:
 
-        # Preprocess text
+        # Preprocess user input
         processed_text = preprocess_text(
             user_input
         )
 
-        # Predict
+        # Predict emotion
         prediction = model.predict(
             processed_text,
             verbose=0
@@ -210,7 +230,7 @@ if analyze:
             prediction
         ) * 100
 
-        # Emotion label
+        # Convert class into emotion label
         predicted_emotion = (
             label_encoder.inverse_transform(
                 [predicted_class]
