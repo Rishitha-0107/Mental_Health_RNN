@@ -34,8 +34,66 @@ nltk.download('stopwords')
 st.set_page_config(
     page_title="Mental Health Monitoring",
     page_icon="🧠",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+
+# =========================================
+# CUSTOM CSS
+# =========================================
+
+st.markdown("""
+<style>
+
+.main {
+    background-color: #f5f7fa;
+}
+
+.main-title {
+    font-size: 45px;
+    font-weight: bold;
+    color: #2E86C1;
+    text-align: center;
+}
+
+.sub-title {
+    font-size: 22px;
+    color: #5D6D7E;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.section-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.tip-box {
+    background-color: #EBF5FB;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.stButton>button {
+    width: 100%;
+    background-color: #2E86C1;
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    padding: 12px;
+    border: none;
+}
+
+.stButton>button:hover {
+    background-color: #1B4F72;
+    color: white;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # =========================================
 # DOWNLOAD MODEL FROM GOOGLE DRIVE
@@ -59,47 +117,55 @@ if not os.path.exists(model_path):
 # LOAD SAVED FILES
 # =========================================
 
-model = load_model(
-    model_path
-)
+model = load_model(model_path)
 
-tokenizer = joblib.load(
-    "tokenizer.pkl"
-)
+tokenizer = joblib.load("tokenizer.pkl")
 
-label_encoder = joblib.load(
-    "label_encoder.pkl"
-)
+label_encoder = joblib.load("label_encoder.pkl")
 
-max_length = joblib.load(
-    "max_length.pkl"
-)
+max_length = joblib.load("max_length.pkl")
 
 # =========================================
 # STOPWORDS
 # =========================================
 
-stop_words = set(
-    stopwords.words('english')
+stop_words = set(stopwords.words('english'))
+
+# =========================================
+# SIDEBAR
+# =========================================
+
+st.sidebar.title("🧠 Mental Health AI")
+
+st.sidebar.info("""
+This AI application predicts emotional sentiment
+using Simple Recurrent Neural Networks.
+""")
+
+st.sidebar.markdown("### Supported Emotions")
+
+for emotion in label_encoder.classes_:
+    st.sidebar.write(f"✅ {emotion}")
+
+# =========================================
+# HEADER SECTION
+# =========================================
+
+st.markdown(
+    '<p class="main-title">🧠 AI-Based Mental Health Sentiment Monitoring System</p>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<p class="sub-title">Emotion Detection using Simple Recurrent Neural Networks</p>',
+    unsafe_allow_html=True
 )
 
 # =========================================
-# SECTION 1 — HEADER
+# ABOUT PROJECT
 # =========================================
 
-st.title(
-    "🧠 AI-Based Mental Health Sentiment Monitoring System"
-)
-
-st.subheader(
-    "Emotion Detection using Simple Recurrent Neural Networks"
-)
-
-# =========================================
-# SECTION 2 — ABOUT PROJECT
-# =========================================
-
-st.markdown("---")
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
 st.header("📘 About the Project")
 
@@ -108,21 +174,23 @@ This AI-powered Mental Health Sentiment Monitoring System
 uses Natural Language Processing (NLP) and Simple Recurrent
 Neural Networks (RNN) to detect emotional sentiment from text.
 
-Importance of Emotional AI:
+### Importance of Emotional AI
 - Helps monitor emotional well-being
 - Detects negative sentiment trends
 - Supports early emotional awareness
 
-NLP Applications:
+### NLP Applications
 - Sentiment Analysis
 - Chatbots
 - Emotion Detection
 - Language Translation
 
-Role of RNN:
-RNN learns sequential text patterns by remembering
-previous words using hidden states.
+### Role of RNN
+RNN models remember previous words using hidden states,
+making them suitable for sequential text learning.
 """)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================================
 # TEXT PREPROCESSING FUNCTION
@@ -130,32 +198,23 @@ previous words using hidden states.
 
 def preprocess_text(text):
 
-    # Lowercase conversion
     text = text.lower()
 
-    # Remove punctuation
     text = text.translate(
         str.maketrans('', '', string.punctuation)
     )
 
-    # Tokenization
     words = word_tokenize(text)
 
-    # Stopword removal
     filtered_words = [
         word for word in words
         if word not in stop_words
     ]
 
-    # Join cleaned words
     text = " ".join(filtered_words)
 
-    # Convert text into sequence
-    sequence = tokenizer.texts_to_sequences(
-        [text]
-    )
+    sequence = tokenizer.texts_to_sequences([text])
 
-    # Padding
     padded = pad_sequences(
         sequence,
         maxlen=max_length,
@@ -166,34 +225,33 @@ def preprocess_text(text):
     return padded
 
 # =========================================
-# SECTION 3 — USER INPUT AREA
+# USER INPUT SECTION
 # =========================================
 
-st.markdown("---")
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-st.header("✍ User Text Input Area")
+st.header("✍ Enter Your Thoughts")
 
-st.write("Sample Sentence Suggestions:")
+st.write("### Sample Sentences")
 
-st.code("""
-I feel happy and confident today
-I feel lonely and depressed
-Nobody understands my pain
-My anxiety is increasing every day
-""")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.info("I feel happy and confident today")
+    st.info("Life feels beautiful and peaceful")
+
+with col2:
+    st.warning("I feel lonely and depressed")
+    st.warning("My anxiety is increasing every day")
 
 user_input = st.text_area(
     "Enter your thoughts or feelings here...",
     height=200
 )
 
-# =========================================
-# SECTION 4 — PREDICTION BUTTON
-# =========================================
+analyze = st.button("🔍 Analyze Emotion")
 
-analyze = st.button(
-    "🔍 Analyze Emotion"
-)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================================
 # PREDICTION SECTION
@@ -203,34 +261,21 @@ if analyze:
 
     if user_input.strip() == "":
 
-        st.warning(
-            "Please enter some text."
-        )
+        st.warning("Please enter some text.")
 
     else:
 
-        # Preprocess user input
-        processed_text = preprocess_text(
-            user_input
-        )
+        processed_text = preprocess_text(user_input)
 
-        # Predict emotion
         prediction = model.predict(
             processed_text,
             verbose=0
         )
 
-        # Predicted class
-        predicted_class = np.argmax(
-            prediction
-        )
+        predicted_class = np.argmax(prediction)
 
-        # Confidence score
-        confidence_score = np.max(
-            prediction
-        ) * 100
+        confidence_score = np.max(prediction) * 100
 
-        # Convert class into emotion label
         predicted_emotion = (
             label_encoder.inverse_transform(
                 [predicted_class]
@@ -238,83 +283,83 @@ if analyze:
         )
 
         # =========================================
-        # SECTION 5 — PREDICTION OUTPUT
+        # OUTPUT SECTION
         # =========================================
 
-        st.markdown("---")
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-        st.header("📊 Prediction Output")
+        st.header("📊 Prediction Results")
 
-        st.success(
-            f"Emotion Detected: {predicted_emotion}"
-        )
+        col1, col2, col3 = st.columns(3)
 
-        st.info(
-            f"Confidence Score: {confidence_score:.2f}%"
-        )
-
-        # Emotional Status
-
-        if confidence_score >= 80:
-
-            st.success(
-                "Emotional Status: Strong Prediction"
+        with col1:
+            st.metric(
+                "Emotion",
+                predicted_emotion
             )
 
-        elif confidence_score >= 50:
-
-            st.warning(
-                "Emotional Status: Moderate Prediction"
+        with col2:
+            st.metric(
+                "Confidence",
+                f"{confidence_score:.2f}%"
             )
 
-        else:
+        with col3:
 
-            st.error(
-                "Emotional Status: Low Confidence Prediction"
+            if confidence_score >= 80:
+                status = "Strong"
+
+            elif confidence_score >= 50:
+                status = "Moderate"
+
+            else:
+                status = "Low"
+
+            st.metric(
+                "Prediction Strength",
+                status
             )
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
         # =========================================
-        # SECTION 6 — VISUALIZATION AREA
+        # VISUALIZATION SECTION
         # =========================================
 
-        st.markdown("---")
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-        st.header("📈 Sentiment Confidence Graph")
+        st.header("📈 Emotion Confidence Graph")
 
         emotions = label_encoder.classes_
 
         probabilities = prediction[0]
 
-        fig, ax = plt.subplots(
-            figsize=(10,5)
-        )
+        fig, ax = plt.subplots(figsize=(10,5))
 
-        ax.bar(
+        bars = ax.bar(
             emotions,
             probabilities
         )
 
-        ax.set_xlabel(
-            "Emotion Categories"
-        )
+        ax.set_xlabel("Emotion Categories")
 
-        ax.set_ylabel(
-            "Probability"
-        )
+        ax.set_ylabel("Probability")
 
-        ax.set_title(
-            "Emotion Probability Chart"
-        )
+        ax.set_title("Sentiment Confidence Levels")
+
+        plt.xticks(rotation=15)
 
         st.pyplot(fig)
 
+        st.markdown('</div>', unsafe_allow_html=True)
+
         # =========================================
-        # SECTION 7 — EMOTIONAL GUIDANCE
+        # GUIDANCE SECTION
         # =========================================
 
-        st.markdown("---")
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-        st.header("💡 Emotional Guidance")
+        st.header("💡 Emotional Wellness Guidance")
 
         if predicted_emotion.lower() in [
             "depression",
@@ -323,17 +368,19 @@ if analyze:
             "suicidal"
         ]:
 
-            st.warning("""
+            st.error("""
 Take a short break and talk with someone you trust.
+""")
 
-Suggested Activities:
-- Deep breathing
-- Listening to calm music
-- Walking outdoors
-- Talking with friends
+            st.markdown("""
+### Suggested Activities
+- 🌿 Deep breathing exercises
+- 🎵 Listen to calming music
+- 🚶 Take a short walk
+- 📞 Talk with friends or family
 
-Emotional Wellness Tip:
-You are not alone. Seeking support is important.
+### Wellness Tip
+You are not alone. Small positive steps can help improve emotional well-being.
 """)
 
         elif predicted_emotion.lower() in [
@@ -342,30 +389,38 @@ You are not alone. Seeking support is important.
         ]:
 
             st.success("""
-Great to see positive emotions.
+Great to see positive emotions today.
+""")
 
-Suggested Activities:
-- Continue healthy habits
-- Exercise regularly
-- Spend time with loved ones
+            st.markdown("""
+### Suggested Activities
+- 🏃 Exercise regularly
+- 📚 Continue productive habits
+- ☀ Spend time outdoors
+- 👨‍👩‍👧 Enjoy time with loved ones
 
-Emotional Wellness Tip:
-Keep maintaining positivity and balance.
+### Wellness Tip
+Maintaining positive routines supports long-term mental wellness.
 """)
 
         else:
 
             st.info("""
-Stay mindful of your emotional health.
-
-Suggested Activities:
-- Meditation
-- Journaling
-- Relaxation exercises
-
-Emotional Wellness Tip:
-Small self-care steps can improve emotional well-being.
+Stay mindful of your emotional balance.
 """)
+
+            st.markdown("""
+### Suggested Activities
+- 🧘 Meditation
+- 📖 Journaling
+- 🎨 Creative hobbies
+- 😴 Proper sleep routine
+
+### Wellness Tip
+Self-care and emotional awareness are important for mental wellness.
+""")
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================================
 # FOOTER
