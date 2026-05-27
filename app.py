@@ -1,6 +1,5 @@
 # Enhanced app.py with Images, Emojis, and Modern UI
 
-```python
 # =========================================
 # AI-Based Mental Health Sentiment Monitoring System
 # =========================================
@@ -484,18 +483,3 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-```
-
-# Update requirements.txt
-
-```txt
-streamlit
-tensorflow
-numpy
-pandas
-matplotlib
-scikit-learn
-joblib
-nltk
-gdown
-```
