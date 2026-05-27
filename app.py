@@ -1,4 +1,3 @@
-# Enhanced app.py with Images, Emojis, and Modern UI
 # =========================================
 # AI-Based Mental Health Sentiment Monitoring System
 # =========================================
@@ -40,81 +39,64 @@ st.set_page_config(
 )
 
 # =========================================
-# PROFESSIONAL DASHBOARD CSS
+# CUSTOM CSS
 # =========================================
 
 st.markdown("""
 <style>
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
 
-.stApp {
-    background-color: #f4f7fb;
+.main {
+    background-color: #f5f7fa;
 }
 
 .main-title {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 0.2rem;
-}
-
-.sub-title {
-    font-size: 1.1rem;
-    color: #6b7280;
-    margin-bottom: 2rem;
-}
-
-.dashboard-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 18px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-    border: 1px solid #e5e7eb;
-    margin-bottom: 1.2rem;
-}
-
-.metric-card {
-    background: linear-gradient(135deg, #ffffff, #f9fafb);
-    padding: 1.2rem;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    font-size: 45px;
+    font-weight: bold;
+    color: #2E86C1;
     text-align: center;
 }
 
-.metric-title {
-    color: #6b7280;
-    font-size: 0.95rem;
+.sub-title {
+    font-size: 22px;
+    color: #5D6D7E;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.metric-value {
-    color: #111827;
-    font-size: 1.8rem;
-    font-weight: bold;
+.section-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.tip-box {
+    background-color: #EBF5FB;
+    padding: 20px;
+    border-radius: 12px;
 }
 
 .stButton>button {
     width: 100%;
-    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    background-color: #2E86C1;
     color: white;
+    font-size: 20px;
+    border-radius: 10px;
+    padding: 12px;
     border: none;
-    border-radius: 12px;
-    padding: 0.9rem;
-    font-size: 1rem;
-    font-weight: 600;
 }
 
 .stButton>button:hover {
-    background: linear-gradient(90deg, #1d4ed8, #1e40af);
+    background-color: #1B4F72;
     color: white;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================
-# DOWNLOAD MODEL
+# DOWNLOAD MODEL FROM GOOGLE DRIVE
 # =========================================
 
 model_url = "https://drive.google.com/uc?id=11SduMJijJMfGF1hXxNaDojuymxgzd5Fe"
@@ -153,11 +135,6 @@ stop_words = set(stopwords.words('english'))
 # SIDEBAR
 # =========================================
 
-st.sidebar.image(
-    "https://cdn-icons-png.flaticon.com/512/3771/3771417.png",
-    width=120
-)
-
 st.sidebar.title("🧠 Mental Health AI")
 
 st.sidebar.info("""
@@ -165,61 +142,53 @@ This AI application predicts emotional sentiment
 using Simple Recurrent Neural Networks.
 """)
 
-st.sidebar.markdown("### 🌈 Supported Emotions")
+st.sidebar.markdown("### Supported Emotions")
 
 for emotion in label_encoder.classes_:
     st.sidebar.write(f"✅ {emotion}")
-
-st.sidebar.markdown("---")
-
-st.sidebar.success("💡 Stay Positive & Take Care of Your Mind")
 
 # =========================================
 # HEADER SECTION
 # =========================================
 
 st.markdown(
-    '<div class="main-title">🧠 AI-Based Mental Health Sentiment Monitoring System</div>',
+    '<p class="main-title">🧠 AI-Based Mental Health Sentiment Monitoring System</p>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="sub-title">Emotion Detection using Simple Recurrent Neural Networks</div>',
+    '<p class="sub-title">Emotion Detection using Simple Recurrent Neural Networks</p>',
     unsafe_allow_html=True
 )
 
+# =========================================
+# ABOUT PROJECT
+# =========================================
+
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+
 st.header("📘 About the Project")
 
-col1, col2 = st.columns([2,1])
-
-with col1:
-
-    st.write("""
+st.write("""
 This AI-powered Mental Health Sentiment Monitoring System
 uses Natural Language Processing (NLP) and Simple Recurrent
 Neural Networks (RNN) to detect emotional sentiment from text.
 
-### 🌟 Importance of Emotional AI
+### Importance of Emotional AI
 - Helps monitor emotional well-being
 - Detects negative sentiment trends
 - Supports early emotional awareness
 
-### 🤖 NLP Applications
+### NLP Applications
 - Sentiment Analysis
 - Chatbots
 - Emotion Detection
 - Language Translation
 
-### 🔄 Role of RNN
+### Role of RNN
 RNN models remember previous words using hidden states,
 making them suitable for sequential text learning.
 """)
-
-with col2:
-
-    st.image(
-        "https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-    )
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -259,31 +228,25 @@ def preprocess_text(text):
 # USER INPUT SECTION
 # =========================================
 
-st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-st.header("✍ Express Your Feelings")
+st.header("✍ Enter Your Thoughts")
 
-st.image(
-    "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
-    width=120
-)
-
-st.write("### 💬 Sample Sentences")
+st.write("### Sample Sentences")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.success("😊 I feel happy and confident today")
-    st.success("🌈 Life feels beautiful and peaceful")
+    st.info("I feel happy and confident today")
+    st.info("Life feels beautiful and peaceful")
 
 with col2:
-    st.error("😔 I feel lonely and depressed")
-    st.error("😟 My anxiety is increasing every day")
+    st.warning("I feel lonely and depressed")
+    st.warning("My anxiety is increasing every day")
 
 user_input = st.text_area(
-    "📝 Enter your thoughts or feelings here...",
-    height=220,
-    placeholder="Type your emotions, thoughts, or feelings here..."
+    "Enter your thoughts or feelings here...",
+    height=200
 )
 
 analyze = st.button("🔍 Analyze Emotion")
@@ -298,7 +261,7 @@ if analyze:
 
     if user_input.strip() == "":
 
-        st.warning("⚠ Please enter some text.")
+        st.warning("Please enter some text.")
 
     else:
 
@@ -323,7 +286,7 @@ if analyze:
         # OUTPUT SECTION
         # =========================================
 
-        st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
         st.header("📊 Prediction Results")
 
@@ -331,13 +294,13 @@ if analyze:
 
         with col1:
             st.metric(
-                "🧠 Emotion",
+                "Emotion",
                 predicted_emotion
             )
 
         with col2:
             st.metric(
-                "🎯 Confidence",
+                "Confidence",
                 f"{confidence_score:.2f}%"
             )
 
@@ -353,7 +316,7 @@ if analyze:
                 status = "Low"
 
             st.metric(
-                "📌 Prediction Strength",
+                "Prediction Strength",
                 status
             )
 
@@ -363,7 +326,7 @@ if analyze:
         # VISUALIZATION SECTION
         # =========================================
 
-        st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
         st.header("📈 Emotion Confidence Graph")
 
@@ -391,10 +354,10 @@ if analyze:
         st.markdown('</div>', unsafe_allow_html=True)
 
         # =========================================
-        # EMOTIONAL GUIDANCE
+        # GUIDANCE SECTION
         # =========================================
 
-        st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
         st.header("💡 Emotional Wellness Guidance")
 
@@ -405,21 +368,18 @@ if analyze:
             "suicidal"
         ]:
 
-            st.image(
-                "https://cdn-icons-png.flaticon.com/512/3774/3774299.png",
-                width=120
-            )
-
-            st.error("😔 Take a short break and talk with someone you trust.")
+            st.error("""
+Take a short break and talk with someone you trust.
+""")
 
             st.markdown("""
-### 🌿 Suggested Activities
-- Deep breathing exercises
-- Listening to calming music
-- Taking a short walk
-- Talking with friends or family
+### Suggested Activities
+- 🌿 Deep breathing exercises
+- 🎵 Listen to calming music
+- 🚶 Take a short walk
+- 📞 Talk with friends or family
 
-### ❤️ Wellness Tip
+### Wellness Tip
 You are not alone. Small positive steps can help improve emotional well-being.
 """)
 
@@ -428,41 +388,35 @@ You are not alone. Small positive steps can help improve emotional well-being.
             "happy"
         ]:
 
-            st.image(
-                "https://cdn-icons-png.flaticon.com/512/742/742751.png",
-                width=120
-            )
-
-            st.success("😊 Great to see positive emotions today.")
+            st.success("""
+Great to see positive emotions today.
+""")
 
             st.markdown("""
-### 🌞 Suggested Activities
-- Exercise regularly
-- Continue productive habits
-- Spend time outdoors
-- Enjoy time with loved ones
+### Suggested Activities
+- 🏃 Exercise regularly
+- 📚 Continue productive habits
+- ☀ Spend time outdoors
+- 👨‍👩‍👧 Enjoy time with loved ones
 
-### 💚 Wellness Tip
+### Wellness Tip
 Maintaining positive routines supports long-term mental wellness.
 """)
 
         else:
 
-            st.image(
-                "https://cdn-icons-png.flaticon.com/512/4228/4228703.png",
-                width=120
-            )
-
-            st.info("🧘 Stay mindful of your emotional balance.")
+            st.info("""
+Stay mindful of your emotional balance.
+""")
 
             st.markdown("""
-### 🌸 Suggested Activities
-- Meditation
-- Journaling
-- Creative hobbies
-- Proper sleep routine
+### Suggested Activities
+- 🧘 Meditation
+- 📖 Journaling
+- 🎨 Creative hobbies
+- 😴 Proper sleep routine
 
-### ✨ Wellness Tip
+### Wellness Tip
 Self-care and emotional awareness are important for mental wellness.
 """)
 
@@ -474,13 +428,6 @@ Self-care and emotional awareness are important for mental wellness.
 
 st.markdown("---")
 
-st.markdown(
-    """
-<div style='text-align:center'>
-<h4>🧠 Developed using Streamlit, TensorFlow, NLP, and SimpleRNN</h4>
-<p>💙 Mental Health Matters • Stay Positive • Stay Strong 💙</p>
-</div>
-""",
-    unsafe_allow_html=True
+st.caption(
+    "Developed using Streamlit, TensorFlow, NLP, and SimpleRNN"
 )
-
